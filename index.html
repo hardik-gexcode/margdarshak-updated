@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>MARGDARSHAK — India's AI Career Navigator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200;12..96,300;12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Lora:ital,wght@0,400;0,500;1,400;1,500&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{--w:#FFFFFF;--off:#FAFAF9;--off2:#F4F3F0;--ink:#0D0D0B;--ink2:#1A1A17;--mid:#6B6860;--light:#B8B5AF;--bdr:#E8E6E1;--bdr2:#D4D1CB;--teal:#1E7A74;--tl:#2B9E96;--txl:rgba(43,158,150,0.08);--org:#C85A0F;--ol:#E8601A;--oxl:rgba(200,90,15,0.07)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;overflow-x:clip}
+body{background:var(--w);color:var(--ink);font-family:'Bricolage Grotesque',system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:clip;cursor:none}
+::selection{background:rgba(43,158,150,0.13)}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-thumb{background:var(--bdr2);border-radius:10px}
+
+/* CURSOR */
+#cur{position:fixed;width:10px;height:10px;border-radius:50%;background:var(--ink);pointer-events:none;z-index:99999;transform:translate(-50%,-50%);transition:width .18s,height .18s,background .18s;mix-blend-mode:multiply}
+#cur-r{position:fixed;width:36px;height:36px;border-radius:50%;border:1.5px solid rgba(13,13,11,0.22);pointer-events:none;z-index:99998;transform:translate(-50%,-50%);transition:width .32s cubic-bezier(.34,1.56,.64,1),height .32s cubic-bezier(.34,1.56,.64,1),border-color .25s}
+body:has(a:hover) #cur,body:has(button:hover) #cur{width:14px;height:14px;background:var(--teal)}
+body:has(a:hover) #cur-r,body:has(button:hover) #cur-r{width:50px;height:50px;border-color:rgba(43,158,150,0.3)}
+@keyframes rayExpand{from{r:0;opacity:.5;stroke-width:2}to{r:54;opacity:0;stroke-width:.5}}
+@keyframes rayLine{from{stroke-dashoffset:0;opacity:.65}to{stroke-dashoffset:-65;opacity:0}}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:64px;padding:0 5vw;display:flex;align-items:center;justify-content:space-between;background:transparent;border-bottom:1px solid transparent;transition:background .35s ease,border-color .35s ease,backdrop-filter .35s ease}
+nav.on-light{background:rgba(255,255,255,0.84);backdrop-filter:blur(24px) saturate(1.8);-webkit-backdrop-filter:blur(24px) saturate(1.8);border-bottom-color:rgba(232,230,225,0.5)}
+.nl{display:flex;align-items:center;gap:9px;font-size:15px;font-weight:700;letter-spacing:-.02em;color:#fff;text-decoration:none;transition:color .35s ease}
+nav.on-light .nl{color:var(--ink)}
+.nlm{width:26px;height:29px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nlm img{width:100%;height:100%;object-fit:contain}
+.nlinks{display:flex;align-items:center;gap:30px}
+.nlinks a{font-size:13.5px;font-weight:500;color:rgba(255,255,255,0.78);text-decoration:none;letter-spacing:-.01em;transition:color .35s ease}
+.nlinks a:hover{color:#fff}
+nav.on-light .nlinks a{color:var(--mid)}
+nav.on-light .nlinks a:hover{color:var(--ink)}
+.ncta{display:flex;gap:10px}
+nav .btn-g{background:rgba(255,255,255,0.08);color:#fff;border-color:rgba(255,255,255,0.32);backdrop-filter:blur(6px)}
+nav .btn-g:hover{background:rgba(255,255,255,0.18);color:#fff}
+nav.on-light .btn-g{background:transparent;color:var(--mid);border-color:var(--bdr2);backdrop-filter:none}
+nav.on-light .btn-g:hover{background:var(--off2);color:var(--ink)}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:7px;font-family:'Bricolage Grotesque',sans-serif;font-weight:600;letter-spacing:-.01em;border-radius:100px;border:none;outline:none;cursor:none;text-decoration:none;transition:all .22s cubic-bezier(.34,1.56,.64,1);white-space:nowrap}
+.btn-sm{padding:8px 18px;font-size:13px}
+.btn-md{padding:11px 24px;font-size:14px}
+.btn-lg{padding:15px 32px;font-size:15px}
+.btn-g{background:transparent;color:var(--mid);border:1px solid var(--bdr2)}
+.btn-g:hover{background:var(--off2);color:var(--ink);transform:translateY(-1px)}
+.btn-d{background:var(--ink);color:white;box-shadow:0 2px 12px rgba(13,13,11,0.16)}
+.btn-d:hover{background:var(--ink2);transform:translateY(-2px);box-shadow:0 8px 24px rgba(13,13,11,0.2)}
+.btn-t{background:var(--teal);color:white;box-shadow:0 2px 10px rgba(30,122,116,0.22)}
+.btn-t:hover{background:var(--tl);transform:translateY(-2px);box-shadow:0 8px 24px rgba(30,122,116,0.28)}
+
+/* HERO */
+#hero{position:relative;background:#0D0D0B}
+.hero-track{height:260vh;position:relative}
+.hero-sticky{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:64px 5vw 0;overflow:hidden}
+.hero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;filter:saturate(1.08) brightness(.62)}
+.hero-scrim{position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(6,8,6,.55) 0%,rgba(6,8,6,.22) 38%,rgba(6,8,6,.72) 100%);pointer-events:none}
+.sun-flash{position:fixed;inset:0;z-index:4000;pointer-events:none;opacity:0;background:radial-gradient(ellipse 70% 60% at 50% 35%,rgba(255,244,214,0.95) 0%,rgba(255,214,140,0.55) 45%,rgba(255,180,90,0) 75%)}
+
+.htag{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;color:#fff;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.28);padding:6px 14px;border-radius:100px;margin-bottom:34px;opacity:0;animation:fu .7s .1s ease forwards;backdrop-filter:blur(6px)}
+.hdot{width:5px;height:5px;border-radius:50%;background:#7CE0D6;animation:bl 2s ease-in-out infinite}
+@keyframes bl{0%,100%{opacity:1}50%{opacity:.3}}
+
+h1{font-family:'Bricolage Grotesque',sans-serif;font-size:clamp(42px,7.5vw,86px);font-weight:800;line-height:.94;letter-spacing:-.05em;color:#fff;margin-bottom:26px;opacity:0;animation:fu .8s .25s ease forwards;text-shadow:0 4px 30px rgba(0,0,0,.25)}
+h1 em{font-family:'Lora',Georgia,serif;font-style:italic;font-weight:500;color:#8FE9DE;letter-spacing:-.03em}
+h1 .wa{color:#FFB37A}
+.hsub{max-width:500px;margin:0 auto 42px;font-size:17px;line-height:1.72;font-weight:400;color:rgba(255,255,255,0.82);opacity:0;animation:fu .7s .4s ease forwards}
+.hbtns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;opacity:0;animation:fu .7s .55s ease forwards;margin-bottom:24px}
+#hero .btn-g{color:#fff;border-color:rgba(255,255,255,0.38)}
+#hero .btn-g:hover{background:rgba(255,255,255,0.14);color:#fff}
+
+.si{position:relative;z-index:2;margin-top:36px;display:flex;flex-direction:column;align-items:center;gap:8px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,0.6);opacity:0;animation:fu .7s 1.5s ease forwards}
+.sb{width:1px;height:44px;background:linear-gradient(to bottom,rgba(255,255,255,0.6),transparent)}
+
+/* BRIDGE BANNER (forest video reused, sits below job-recommendation preview) */
+#bridge{position:relative;height:62vh;min-height:400px;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#0D0D0B}
+.hqx-seam{height:14vh;position:relative;background:linear-gradient(180deg,#0D0D0B,var(--off));pointer-events:none}
+.bridge-video{position:absolute;top:50%;left:50%;min-width:100%;min-height:100%;width:auto;height:auto;transform:translate(-50%,-50%);object-fit:cover;filter:saturate(1.05) brightness(.55)}
+.bridge-scrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,8,6,.35),rgba(6,8,6,.65))}
+.bridge-copy{position:relative;z-index:2;text-align:center;padding:0 6vw}
+.bridge-arrow{margin-top:18px;color:#fff;opacity:.6;font-size:20px;animation:bl 2s ease-in-out infinite}
+.cin-h{font-family:'Bricolage Grotesque',sans-serif;font-size:clamp(32px,5.2vw,58px);font-weight:800;letter-spacing:-.045em;line-height:1;color:#fff;text-shadow:0 4px 40px rgba(0,0,0,.4)}
+.cin-h em{font-family:'Lora',Georgia,serif;font-style:italic;font-weight:500;letter-spacing:-.02em}
+.cin-eye{font-family:'DM Mono',monospace;font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:16px}
+
+/* HQ EXPLORER — scroll-linked video scrubbing across 3 HQs */
+#hqx{position:relative;background:#0D0D0B}
+.hqx-track{height:320vh;position:relative}
+.hqx-sticky{position:sticky;top:0;height:100vh;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.hqx-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.hqx-scrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(4,6,4,.6) 0%,rgba(4,6,4,.15) 32%,rgba(4,6,4,.72) 100%);pointer-events:none}
+.hqx-head{position:relative;z-index:2;text-align:center;margin-bottom:26px;padding:0 6vw}
+.hqx-card{position:relative;z-index:2;width:min(370px,86vw);background:#fff;border-radius:26px;padding:30px 26px 32px;box-shadow:0 30px 90px rgba(0,0,0,.4);opacity:0;transform:translateY(18px);transition:opacity .4s ease,transform .4s ease}
+.hqx-card.show{opacity:1;transform:translateY(0)}
+.hqx-logo{width:48px;height:48px;border-radius:12px;background:var(--off2,#F4F3EF);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;padding:9px}
+.hqx-logo img{width:100%;height:100%;object-fit:contain}
+.hqx-role{text-align:center;font-family:'DM Mono',monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:#8A8880;margin-bottom:14px}
+.hqx-brief{font-size:15.5px;line-height:1.6;font-weight:500;color:#0D0D0B;text-align:center;margin-bottom:18px}
+.hqx-tags{display:flex;flex-wrap:wrap;gap:7px;justify-content:center}
+.hqx-tag{font-size:11.5px;font-weight:600;color:#3A3934;background:#F4F3EF;border:1px solid #E8E6E1;padding:5px 12px;border-radius:100px}
+.hqx-dots{position:relative;z-index:2;display:flex;justify-content:center;gap:8px;margin-top:26px}
+.hqx-dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.32);transition:all .25s}
+.hqx-dot.active{background:#fff;width:22px;border-radius:5px}
+.hqx-hint{position:absolute;bottom:26px;left:0;right:0;text-align:center;z-index:2;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.5)}
+@media(max-width:640px){.hqx-track{height:280vh}.hqx-card{padding:24px 20px 26px}}
+
+/* AUTH MODAL — paper-roll video, fullscreen, that resolves into a real sign-in form */
+.am-overlay{position:fixed;inset:0;z-index:5000;background:#0D0D0B;display:none}
+.am-overlay.open{display:block}
+.am-close{position:absolute;top:26px;right:28px;width:40px;height:40px;border-radius:50%;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.08);color:#fff;font-size:15px;z-index:10;transition:background .2s}
+.am-close:hover{background:rgba(255,255,255,.2)}
+.am-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#1c1a16}
+.am-vignette{position:absolute;inset:0;z-index:1;background:radial-gradient(ellipse 80% 70% at 50% 48%,transparent 45%,rgba(0,0,0,.3) 100%);pointer-events:none}
+.am-formwrap{position:absolute;background:#fff;opacity:0;transform:translateY(10px) scale(.98);transition:opacity .5s ease,transform .5s ease;display:flex;flex-direction:column;align-items:center;box-shadow:0 20px 60px rgba(0,0,0,.25);border-radius:1.4em;padding:1.5em 1.7em;z-index:2}
+.am-formwrap.show{opacity:1;transform:translateY(0) scale(1)}
+.am-formwrap.fallback{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%) scale(.98);width:min(360px,88vw);height:auto}
+.am-formwrap.fallback.show{transform:translate(-50%,-50%) scale(1)}
+.am-avatar{width:2.3em;height:2.3em;border-radius:0.55em;background:#F2F1EC;display:flex;align-items:center;justify-content:center;margin-bottom:0.9em;flex-shrink:0}
+.am-avatar svg{width:45%;height:45%}
+#amTitle{font-family:'Bricolage Grotesque',sans-serif;font-size:1.55em;font-weight:800;letter-spacing:-.02em;margin-bottom:1em;color:#0D0D0B}
+#amForm{width:100%;display:flex;flex-direction:column;gap:0.65em}
+.am-extra{width:100%}
+.am-inp{width:100%;box-sizing:border-box;padding:0.8em 0.95em;border-radius:0.65em;border:1px solid #E8E6E1;background:#FAFAF8;font-size:1em;font-family:'Bricolage Grotesque',sans-serif;outline:none;transition:border-color .2s}
+.am-inp:focus{border-color:#2B9E96}
+.am-pwwrap{position:relative;width:100%}
+.am-eye{position:absolute;right:0.8em;top:50%;transform:translateY(-50%);background:none;border:none;cursor:none;font-size:0.85em;opacity:.55;padding:0;line-height:1}
+.am-submit{width:100%;margin-top:0.3em;padding:0.85em 0;border-radius:100px;border:none;background:#0D0D0B;color:#fff;font-weight:700;font-size:1.05em;cursor:none;transition:transform .2s,background .2s;font-family:'Bricolage Grotesque',sans-serif}
+.am-submit:hover{background:#221f1a;transform:translateY(-1px)}
+.am-submit:disabled{opacity:.55;cursor:default;transform:none}
+.am-toggle{margin-top:1em;background:none;border:none;color:#2B9E96;font-weight:700;font-size:0.92em;cursor:none;font-family:'Bricolage Grotesque',sans-serif}
+.am-error{font-size:0.8em;color:#C0392B;text-align:center;width:100%}
+
+/* PROOF */
+#proof{padding:26px 5vw;border-top:1px solid var(--bdr);border-bottom:1px solid var(--bdr);background:var(--off);display:flex;align-items:center;justify-content:center;gap:36px;flex-wrap:wrap}
+.pi{display:flex;align-items:center;gap:10px;font-size:12px;font-weight:600;color:var(--mid);letter-spacing:-.01em}
+.pn{font-family:'Lora',serif;font-size:18px;font-weight:500;font-style:italic;color:var(--teal)}
+.ps2{width:1px;height:18px;background:var(--bdr2)}
+
+/* SECTIONS */
+.sec{padding:108px 5vw}
+.si2{max-width:1100px;margin:0 auto}
+.ey{font-family:'DM Mono',monospace;font-size:10.5px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--teal);margin-bottom:18px}
+.sh{font-family:'Bricolage Grotesque',sans-serif;font-size:clamp(29px,4vw,48px);font-weight:800;letter-spacing:-.04em;line-height:.97;color:var(--ink)}
+.sh em{font-family:'Lora',serif;font-style:italic;font-weight:500;color:var(--teal);letter-spacing:-.02em}
+.rv{opacity:0;transform:translateY(28px);transition:opacity .6s ease,transform .6s ease}
+.rv.in{opacity:1;transform:translateY(0)}
+.d1{transition-delay:.08s}.d2{transition-delay:.16s}.d3{transition-delay:.24s}.d4{transition-delay:.32s}
+
+/* STATS */
+#stats{background:var(--off);border-top:1px solid var(--bdr);border-bottom:1px solid var(--bdr)}
+.sg{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--bdr);border:1px solid var(--bdr);border-radius:22px;overflow:hidden;margin-top:52px}
+.sc{background:var(--w);padding:34px 26px}
+.sn{font-family:'Lora',serif;font-size:clamp(34px,3.5vw,50px);font-weight:500;font-style:italic;color:var(--ink);line-height:1;margin-bottom:8px}
+.sn b{color:var(--teal);font-style:normal;font-family:'Bricolage Grotesque',sans-serif;font-weight:800}
+.sl{font-size:13px;color:var(--mid);font-weight:500;line-height:1.5}
+
+/* FEATURES */
+.fg{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--bdr);border:1px solid var(--bdr);border-radius:22px;overflow:hidden;margin-top:52px}
+.fc{background:var(--w);padding:34px 28px;position:relative;overflow:hidden;transition:background .22s}
+.fc::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at var(--mx,50%) var(--my,50%),rgba(43,158,150,0.05),transparent 55%);opacity:0;transition:opacity .35s}
+.fc:hover{background:var(--off)}.fc:hover::after{opacity:1}
+.fi{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:17px;margin-bottom:18px}
+.fc h3{font-size:15.5px;font-weight:700;letter-spacing:-.02em;margin-bottom:9px;color:var(--ink)}
+.fc p{font-size:13.5px;line-height:1.68;color:var(--mid);font-weight:400}
+.fp{display:inline-block;margin-top:14px;font-family:'DM Mono',monospace;font-size:9.5px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;padding:4px 10px;border-radius:100px;border:1px solid var(--bdr2);color:var(--mid)}
+
+/* HOW */
+#how{background:var(--off);border-top:1px solid var(--bdr)}
+.hwg{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:center;margin-top:52px}
+.hs{display:flex;gap:18px;padding:22px 0;border-bottom:1px solid var(--bdr)}
+.hs:last-child{border-bottom:none}
+.hsn{font-family:'Lora',serif;font-style:italic;font-size:38px;font-weight:400;color:var(--teal);line-height:1;flex-shrink:0;width:44px}
+.hsb h4{font-size:15px;font-weight:700;letter-spacing:-.02em;margin-bottom:5px}
+.hsb p{font-size:13.5px;color:var(--mid);line-height:1.65}
+.pw{perspective:1000px;display:flex;justify-content:center}
+.p3{width:232px;height:470px;border-radius:34px;background:var(--ink);border:6px solid #1E1E1C;position:relative;transform:rotateY(-10deg) rotateX(3deg);box-shadow:28px 44px 64px rgba(0,0,0,0.11),0 0 0 1px rgba(0,0,0,0.05);animation:pb 5s ease-in-out infinite}
+.pn2{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:68px;height:4px;background:#111;border-radius:10px}
+.psc{position:absolute;inset:4px;border-radius:28px;background:#F7F4EE;overflow:hidden;display:flex;flex-direction:column}
+.pb2{height:34px;background:white;border-bottom:1px solid var(--bdr);display:flex;align-items:center;padding:0 12px;gap:5px}
+.pd{width:6px;height:6px;border-radius:50%}
+.pct{flex:1;padding:12px 11px;display:flex;flex-direction:column;gap:8px}
+.plb{font-family:'DM Mono',monospace;font-size:8.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--mid);margin-bottom:2px}
+.pcd{background:white;border:1px solid var(--bdr);border-radius:11px;padding:11px}
+.pbg{font-family:'Bricolage Grotesque',sans-serif;font-size:20px;font-weight:800;color:var(--ink)}
+.pb3{height:4px;border-radius:2px;background:var(--bdr);overflow:hidden;margin-top:6px}
+.pf{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--teal),var(--tl))}
+.pr{background:white;border:1px solid var(--bdr);border-radius:9px;padding:8px 10px;display:flex;justify-content:space-between;align-items:center}
+.pr span{font-size:10.5px;font-weight:600;color:var(--ink)}
+.pr b{font-size:9.5px;color:var(--teal);font-weight:700}
+
+/* REC */
+#rec{background:var(--ink);color:white;border-top:none;position:relative}
+#rec::before{content:'';position:absolute;top:0;left:0;right:0;height:110px;z-index:1;background:linear-gradient(180deg,var(--off),transparent);pointer-events:none}
+#rec .ey{color:rgba(255,255,255,0.3)}
+#rec .sh{color:white}
+#rec .sh em{color:rgba(43,158,150,0.85)}
+.ls{display:flex;align-items:center;justify-content:center;gap:44px;flex-wrap:wrap;margin-top:52px;margin-bottom:36px}
+.ln{display:flex;flex-direction:column;align-items:center;gap:9px;opacity:.38;filter:brightness(2) grayscale(1);transition:all .3s;cursor:default}
+.ln:hover{opacity:.82;filter:brightness(1) grayscale(0)}
+.ll{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,0.38);font-weight:500}
+.chs{display:flex;flex-wrap:wrap;justify-content:center;gap:9px}
+.ch{display:flex;align-items:center;gap:7px;padding:7px 15px;border-radius:100px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);font-size:12px;font-weight:500;color:rgba(255,255,255,0.52)}
+.chd{width:5px;height:5px;border-radius:50%;background:var(--tl)}
+
+/* CTA */
+#cta{background:var(--off);border-top:1px solid var(--bdr);text-align:center;padding:116px 5vw;position:relative;overflow:hidden}
+#cta::before{content:'';position:absolute;top:-1px;left:0;right:0;height:110px;background:linear-gradient(180deg,var(--ink),transparent);pointer-events:none}
+#cta::before{content:'';position:absolute;width:560px;height:560px;border-radius:50%;background:radial-gradient(circle,rgba(43,158,150,0.065),transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none}
+#cta h2{font-family:'Bricolage Grotesque',sans-serif;font-size:clamp(34px,5.5vw,68px);font-weight:800;letter-spacing:-.05em;line-height:.95;margin-bottom:22px;color:var(--ink);position:relative}
+#cta h2 em{font-family:'Lora',serif;font-style:italic;font-weight:500;color:var(--teal)}
+#cta p{font-size:16.5px;color:var(--mid);margin-bottom:38px;position:relative}
+.cb{display:flex;gap:11px;justify-content:center;flex-wrap:wrap;position:relative}
+
+/* FOOTER */
+footer{padding:34px 5vw;border-top:1px solid var(--bdr);background:var(--w);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px}
+.fl{font-size:14px;font-weight:700;letter-spacing:-.02em;color:var(--mid)}
+.fl b{color:var(--org)}
+.fn{font-family:'DM Mono',monospace;font-size:9.5px;color:var(--light);letter-spacing:.07em}
+.fls{display:flex;gap:18px}
+.fls a{font-size:13px;color:var(--mid);text-decoration:none;font-weight:500;transition:color .2s}
+.fls a:hover{color:var(--ink)}
+
+/* ANIMS */
+@keyframes fu{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes sp{to{transform:rotate(360deg)}}
+@keyframes nw{0%,100%{transform:rotate(0deg)}30%{transform:rotate(5deg)}70%{transform:rotate(-5deg)}}
+@keyframes pb{0%,100%{transform:rotateY(-10deg) rotateX(3deg) translateY(0)}50%{transform:rotateY(-10deg) rotateX(3deg) translateY(-10px)}}
+
+@media(max-width:860px){.sg{grid-template-columns:repeat(2,1fr)}.fg{grid-template-columns:1fr}.hwg{grid-template-columns:1fr}.pw{display:none}.nlinks{display:none}}
+@media(max-width:520px){h1{font-size:38px}.ls{gap:24px}}
+</style>
+</head>
+<body>
+<div id="cur"></div>
+<div id="cur-r"></div>
+
+<nav>
+  <a href="/" class="nl">
+    <div class="nlm">
+      <img src="/assets/logo-mark.png" alt="" width="26" height="29"/>
+    </div>
+    MARGDARSHAK
+  </a>
+  <div class="nlinks">
+    <a href="#features">Features</a>
+    <a href="#how">How it works</a>
+    <a href="#rec">Recognition</a>
+  </div>
+  <div class="ncta">
+    <a href="/auth" data-auth="login" class="btn btn-g btn-sm">Sign In</a>
+    <a href="/auth" data-auth="signup" class="btn btn-d btn-sm">Get Started →</a>
+  </div>
+</nav>
+
+<section id="hero">
+  <div class="hero-track">
+    <div class="hero-sticky">
+      <video class="hero-video" id="heroVideo" muted playsinline preload="auto">
+        <source src="/videos/hero-forest-scrub.mp4" type="video/mp4">
+      </video>
+      <div class="hero-scrim"></div>
+      <div style="position:relative;z-index:2;max-width:840px;margin:0 auto">
+        <div class="htag"><div class="hdot"></div>India's AI Career Navigator</div>
+        <h1>Find your<br/><em>direction.</em><br/>Own your <span class="wa">career.</span></h1>
+        <p class="hsub">Personalised AI guidance for Indian students and job seekers. Skill scans, 90-day roadmaps, and a mentor that speaks your language.</p>
+        <div class="hbtns">
+          <a href="/auth" data-auth="signup" class="btn btn-d btn-lg">Start Free — No card needed</a>
+          <a href="#how" class="btn btn-g btn-lg">See how it works</a>
+        </div>
+        <div class="si"><div class="sb"></div>Scroll</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="sun-flash" id="sunFlash"></div>
+
+<section id="bridge">
+  <video class="bridge-video" muted loop autoplay playsinline preload="none">
+    <source src="/videos/hero-forest.mp4" type="video/mp4">
+  </video>
+  <div class="bridge-scrim"></div>
+  <div class="bridge-copy">
+    <div class="cin-eye">From score to offer</div>
+    <h2 class="cin-h">Your roles are already<br/><em style="color:#8FE9DE">out there hiring.</em></h2>
+    <div class="bridge-arrow">↓</div>
+  </div>
+</section>
+
+<section id="hqx">
+  <div class="hqx-track">
+    <div class="hqx-sticky">
+      <video id="hqVideo" class="hqx-video" muted playsinline preload="auto">
+        <source src="/videos/hq-map-scrub.mp4" type="video/mp4">
+      </video>
+      <div class="hqx-scrim"></div>
+      <div class="hqx-head">
+        <div class="cin-eye" style="justify-content:center;display:flex">Where India's future is being built</div>
+        <h2 class="cin-h" style="font-size:clamp(28px,4.4vw,50px)">Your skills. <em style="color:#8FE9DE">Their offices.</em></h2>
+      </div>
+      <div class="hqx-card" id="hqCard"></div>
+      <div class="hqx-dots" id="hqDots">
+        <span class="hqx-dot active" data-i="0"></span>
+        <span class="hqx-dot" data-i="1"></span>
+        <span class="hqx-dot" data-i="2"></span>
+      </div>
+      <div class="hqx-hint">Keep scrolling to move the map →</div>
+    </div>
+  </div>
+  <div class="hqx-seam"></div>
+</section>
+
+<div id="proof">
+  <div class="pi"><span class="pn">180K+</span>Python jobs in India</div>
+  <div class="ps2"></div>
+  <div class="pi"><span class="pn">90</span>days to career-ready</div>
+  <div class="ps2"></div>
+  <div class="pi"><span class="pn">100%</span>free resources</div>
+  <div class="ps2"></div>
+  <div class="pi"><span class="pn">₹12L</span>avg salary post-roadmap</div>
+</div>
+
+<section id="stats" class="sec">
+  <div class="si2">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:52px;align-items:end">
+      <div>
+        <div class="ey rv">Platform</div>
+        <h2 class="sh rv d1">Helping India's next<br/>generation find their<br/><em>true north.</em></h2>
+      </div>
+      <p class="rv d2" style="font-size:15px;color:var(--mid);line-height:1.75">From first-year students to career switchers — MARGDARSHAK delivers AI-powered career clarity built for India's job market, culture, and ambitions.</p>
+    </div>
+    <div class="sg rv d3">
+      <div class="sc"><div class="sn">180<b>K+</b></div><div class="sl">Python jobs in India right now</div></div>
+      <div class="sc"><div class="sn"><em>90</em></div><div class="sl">Days to full career-readiness</div></div>
+      <div class="sc"><div class="sn">100<b>%</b></div><div class="sl">Free NPTEL &amp; Swayam resources</div></div>
+      <div class="sc"><div class="sn"><em>₹12L</em></div><div class="sl">Avg salary after full roadmap</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="features" class="sec" style="background:var(--w)">
+  <div class="si2">
+    <div class="ey rv">What MARGDARSHAK does</div>
+    <h2 class="sh rv d1">Everything you need.<br/><em>Nothing you don't.</em></h2>
+    <p class="rv d2" style="color:var(--mid);font-size:15.5px;margin-top:8px">Six tools. One platform. Free to start.</p>
+    <div class="fg">
+      <div class="fc rv"><div class="fi" style="background:rgba(43,158,150,0.1)">🧭</div><h3>AI Skill Scan</h3><p>Deep analysis of your background and goals. Personalised market fit score with live India job data.</p><div class="fp">+50 XP</div></div>
+      <div class="fc rv d1"><div class="fi" style="background:rgba(200,90,15,0.1)">🗺️</div><h3>90-Day Roadmap</h3><p>Phase-by-phase learning plan with free NPTEL and Swayam resources tailored to your exact goal.</p><div class="fp">+30 XP</div></div>
+      <div class="fc rv d2"><div class="fi" style="background:rgba(100,80,220,0.08)">💬</div><h3>AI Mentor Chat</h3><p>Ask anything — salary, switches, interviews. India-specific answers every time. Powered by Gemini.</p><div class="fp">+5 XP / chat</div></div>
+      <div class="fc rv"><div class="fi" style="background:rgba(200,160,20,0.09)">📈</div><h3>Market Intelligence</h3><p>Salary trends, top hiring companies, in-demand skills across IT, FinTech, EdTech in India.</p><div class="fp">Live data</div></div>
+      <div class="fc rv d1"><div class="fi" style="background:rgba(50,140,50,0.09)">🏆</div><h3>Badges &amp; XP</h3><p>Earn XP for every action. Unlock badges. Compete on the national leaderboard.</p><div class="fp">200 XP max</div></div>
+      <div class="fc rv d2"><div class="fi" style="background:rgba(220,80,160,0.07)">🤳</div><h3>3D Profile</h3><p>Your avatar tilts with your cursor and floats with scroll. Upload once, shine forever.</p><div class="fp">+10 XP</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="how" class="sec">
+  <div class="si2">
+    <div class="ey rv">How it works</div>
+    <div class="hwg">
+      <div>
+        <h2 class="sh rv d1" style="margin-bottom:32px">Three steps to<br/><em>clarity.</em></h2>
+        <div class="hs rv d1"><div class="hsn">01</div><div class="hsb"><h4>Tell us about yourself</h4><p>Share your background, skills, city, and goal. Takes 60 seconds.</p></div></div>
+        <div class="hs rv d2"><div class="hsn">02</div><div class="hsb"><h4>Get your AI Skill Scan</h4><p>Our AI analyses India's live job market and gives you a fit score, skill gaps, and top target roles.</p></div></div>
+        <div class="hs rv d3"><div class="hsn">03</div><div class="hsb"><h4>Follow your 90-day plan</h4><p>Week-by-week tasks with free resources. Chat your AI mentor. Track XP and badges.</p></div></div>
+      </div>
+      <div class="pw rv d2">
+        <div class="p3">
+          <div class="pn2"></div>
+          <div class="psc">
+            <div class="pb2"><div class="pd" style="background:#E8601A"></div><div class="pd" style="background:#F5C842"></div><div class="pd" style="background:#4A9E3A"></div></div>
+            <div class="pct">
+              <div class="plb">AI Skill Scan</div>
+              <div class="pcd"><div class="plb">Market Fit Score</div><div class="pbg">82<span style="font-size:13px;color:var(--mid)">/100</span></div><div class="pb3"><div class="pf" style="width:82%"></div></div></div>
+              <div class="pcd"><div class="plb">Readiness</div><div class="pbg" style="font-size:17px;color:var(--teal)">68<span style="font-size:11px;color:var(--mid)">/100</span></div><div class="pb3"><div class="pf" style="width:68%"></div></div></div>
+              <div class="plb">Top Roles</div>
+              <div class="pr"><span>Data Analyst</span><b>82%</b></div>
+              <div class="pr"><span>Biz Analyst</span><b style="color:var(--org)">76%</b></div>
+              <div style="margin-top:auto;background:linear-gradient(135deg,rgba(43,158,150,0.07),rgba(200,90,15,0.04));border:1px solid var(--bdr);border-radius:10px;padding:10px"><div class="plb">Salary in 12 months</div><div style="font-family:'Bricolage Grotesque',sans-serif;font-size:14px;font-weight:800;color:var(--ink)">₹6–12 LPA</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="rec" class="sec">
+  <div class="si2">
+    <div class="ey rv">Recognition</div>
+    <h2 class="sh rv d1" style="margin-bottom:8px">Built with India's<br/>best <em>institutions.</em></h2>
+    <p class="rv d2" style="color:rgba(255,255,255,0.35);font-size:15px;margin-top:8px">Top-rank at India's premier engineering and AI competitions.</p>
+    <div class="ls">
+      <div class="ln rv">
+        <svg width="66" height="40" viewBox="0 0 200 122" fill="none"><path d="M68 54C66 47 60 42 52 42C40 42 32 54 32 68C32 80 40 90 52 90C60 90 66 85 69 78" stroke="#FF9900" stroke-width="8" stroke-linecap="round" fill="none"/><path d="M88 42L80 90M80 90L74 62M74 62L68 90M68 90L60 42" stroke="#FF9900" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M108 42C106 42 103 44 103 54C103 66 106 70 112 70C116 70 118 67 118 62C118 54 114 42 108 42ZM103 70C103 78 106 90 114 90C118 90 121 87 122 82" stroke="#FF9900" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M34 105C58 117 142 117 166 105" stroke="#FF9900" stroke-width="5.5" stroke-linecap="round" fill="none"/><path d="M166 105L158 100" stroke="#FF9900" stroke-width="5.5" stroke-linecap="round"/></svg>
+        <div class="ll">AWS 10,000 AIdeas</div>
+      </div>
+      <div class="ln rv d1">
+        <svg width="46" height="46" viewBox="0 0 100 100" fill="none"><circle cx="50" cy="50" r="46" stroke="#1565C0" stroke-width="4.5" fill="none"/><circle cx="50" cy="50" r="34" stroke="#1565C0" stroke-width="2" fill="none"/><rect x="36" y="54" width="28" height="19" stroke="#B8860B" stroke-width="3" fill="none"/><line x1="50" y1="32" x2="50" y2="54" stroke="#B8860B" stroke-width="3.5"/><path d="M43 32L50 23L57 32" fill="#B8860B"/><line x1="43" y1="23" x2="43" y2="36" stroke="#B8860B" stroke-width="2.5"/><line x1="57" y1="23" x2="57" y2="36" stroke="#B8860B" stroke-width="2.5"/></svg>
+        <div class="ll">MNIT Jaipur · RAMP 1.0</div>
+      </div>
+      <div class="ln rv d2">
+        <svg width="46" height="46" viewBox="0 0 100 100" fill="none"><circle cx="50" cy="50" r="46" stroke="#C62828" stroke-width="4.5" fill="none"/><circle cx="50" cy="50" r="34" stroke="#C62828" stroke-width="1.5" fill="none" stroke-dasharray="4 3"/><circle cx="50" cy="50" r="20" stroke="#C62828" stroke-width="3" fill="none"/><circle cx="50" cy="50" r="7" stroke="#C62828" stroke-width="2" fill="none"/><line x1="50" y1="14" x2="50" y2="30" stroke="#C62828" stroke-width="3.5"/><line x1="50" y1="70" x2="50" y2="86" stroke="#C62828" stroke-width="3.5"/><line x1="14" y1="50" x2="30" y2="50" stroke="#C62828" stroke-width="3.5"/><line x1="70" y1="50" x2="86" y2="50" stroke="#C62828" stroke-width="3.5"/></svg>
+        <div class="ll">IIT Delhi · BECon</div>
+      </div>
+      <div class="ln rv d3">
+        <svg width="46" height="46" viewBox="0 0 100 100" fill="none"><circle cx="50" cy="50" r="46" stroke="#1A237E" stroke-width="4.5" fill="none"/><circle cx="50" cy="50" r="34" stroke="#1A237E" stroke-width="1.5" fill="none"/><path d="M50 18L50 82M18 50L82 50" stroke="#FF8F00" stroke-width="3" stroke-linecap="round"/><circle cx="50" cy="50" r="11" stroke="#FF8F00" stroke-width="3" fill="none"/><circle cx="50" cy="50" r="4" fill="#FF8F00"/><circle cx="50" cy="18" r="3.5" fill="#FF8F00"/></svg>
+        <div class="ll">IIT Jodhpur · NSH 2026</div>
+      </div>
+      <div class="ln rv d4">
+        <svg width="46" height="46" viewBox="0 0 100 100" fill="none"><path d="M50 8L88 24L88 52C88 72 70 88 50 92C30 88 12 72 12 52L12 24Z" stroke="#1B5E20" stroke-width="4.5" fill="none"/><path d="M50 20L76 32L76 52C76 66 64 78 50 82C36 78 24 66 24 52L24 32Z" stroke="#1B5E20" stroke-width="2" fill="none"/><path d="M37 50L46 59L63 42" stroke="#1B5E20" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+        <div class="ll">MHA · SHIELD 1.0</div>
+      </div>
+    </div>
+    <div class="chs rv">
+      <div class="ch"><div class="chd"></div>AWS AIdeas Semi-Finalist</div>
+      <div class="ch"><div class="chd" style="background:#E8601A"></div>SHIELD 1.0 — Top 8 / 533+ Teams</div>
+      <div class="ch"><div class="chd" style="background:#7B6CF6"></div>RAMP 1.0 — 3rd Place National</div>
+      <div class="ch"><div class="chd" style="background:#F5C842"></div>IIT Delhi BECon — Top 8</div>
+    </div>
+  </div>
+</section>
+
+<section id="cta">
+  <div style="max-width:680px;margin:0 auto;position:relative">
+    <div class="ey rv" style="justify-content:center;display:flex">Get started</div>
+    <h2 class="rv d1">Your career has a<br/><em>true north.</em></h2>
+    <p class="rv d2">Join thousands of Indian students using MARGDARSHAK to navigate their future. Free. No credit card. No catch.</p>
+    <div class="cb rv d3">
+      <a href="/auth" data-auth="signup" class="btn btn-d btn-lg">Start Your Journey Free →</a>
+      <a href="/auth" data-auth="login" class="btn btn-g btn-lg">I have an account</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="fl">MARG<b>DARSHAK</b></div>
+  <div class="fn">JECRC FOUNDATION, JAIPUR · AGNIBYTES</div>
+  <div class="fls"><a href="/auth" data-auth="signup">Sign Up</a><a href="/auth" data-auth="login">Log In</a><a href="#how">How It Works</a></div>
+</footer>
+
+<div id="authModal" class="am-overlay">
+  <video id="authVideo" class="am-video" muted playsinline preload="auto">
+    <source src="/videos/login-paper.mp4" type="video/mp4">
+  </video>
+  <div class="am-vignette"></div>
+  <button class="am-close" id="amClose" type="button" aria-label="Close">✕</button>
+  <div class="am-formwrap" id="amFormWrap">
+    <div class="am-avatar">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="#0D0D0B" stroke-width="1.8"/><path d="M4 20c0-4.4 3.6-7 8-7s8 2.6 8 7" stroke="#0D0D0B" stroke-width="1.8" stroke-linecap="round"/></svg>
+    </div>
+    <h3 id="amTitle">Sign In</h3>
+    <form id="amForm" autocomplete="on">
+      <div id="amExtra" class="am-extra" hidden>
+        <input class="am-inp" id="amName" placeholder="Full name" autocomplete="name"/>
+      </div>
+      <input class="am-inp" id="amEmail" type="text" placeholder="Email / Username" autocomplete="username" required/>
+      <div class="am-pwwrap">
+        <input class="am-inp" id="amPass" type="password" placeholder="Password" autocomplete="current-password" required/>
+        <button type="button" class="am-eye" id="amEye" aria-label="Show password">👁</button>
+      </div>
+      <div id="amError" class="am-error" hidden></div>
+      <button type="submit" class="am-submit" id="amSubmit">Log In</button>
+    </form>
+    <button type="button" class="am-toggle" id="amToggle">Create Account</button>
+  </div>
+</div>
+
+<script>
+// CURSOR
+const cur=document.getElementById('cur'),ring=document.getElementById('cur-r');
+let mx=-100,my=-100,rx=-100,ry=-100;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY});
+document.addEventListener('mouseleave',()=>{cur.style.opacity='0';ring.style.opacity='0'});
+document.addEventListener('mouseenter',()=>{cur.style.opacity='1';ring.style.opacity='1'});
+(function anim(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;cur.style.left=mx+'px';cur.style.top=my+'px';ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(anim)})();
+
+// RAY BURST ON CLICK
+document.addEventListener('click',e=>{
+  const ns='http://www.w3.org/2000/svg';
+  const svg=document.createElementNS(ns,'svg');
+  svg.setAttribute('width','130');svg.setAttribute('height','130');svg.setAttribute('viewBox','-65 -65 130 130');
+  svg.style.cssText=`position:fixed;left:${e.clientX}px;top:${e.clientY}px;pointer-events:none;z-index:99997;transform:translate(-50%,-50%)`;
+  const c=document.createElementNS(ns,'circle');
+  c.setAttribute('cx','0');c.setAttribute('cy','0');c.setAttribute('r','0');
+  c.setAttribute('fill','none');c.setAttribute('stroke','#1E7A74');c.setAttribute('stroke-width','1.5');
+  c.style.animation='rayExpand .5s cubic-bezier(.2,1,.4,1) forwards';
+  svg.appendChild(c);
+  for(let i=0;i<8;i++){
+    const a=(i/8)*Math.PI*2,cos=Math.cos(a),sin=Math.sin(a);
+    const len=16+Math.random()*22,s2=9,e2=s2+len;
+    const l=document.createElementNS(ns,'line');
+    l.setAttribute('x1',cos*s2);l.setAttribute('y1',sin*s2);
+    l.setAttribute('x2',cos*e2);l.setAttribute('y2',sin*e2);
+    l.setAttribute('stroke',i%2===0?'#1E7A74':'#C85A0F');
+    l.setAttribute('stroke-width','1.5');l.setAttribute('stroke-linecap','round');
+    l.setAttribute('stroke-dasharray',len);l.setAttribute('stroke-dashoffset','0');
+    l.style.animation=`rayLine ${.38+Math.random()*.18}s cubic-bezier(.2,1,.4,1) forwards`;
+    svg.appendChild(l);
+  }
+  document.body.appendChild(svg);
+  setTimeout(()=>svg.remove(),650);
+});
+
+// SCROLL REVEAL
+const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.1});
+document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+
+// HERO VIDEO — scrolling scrubs the video itself (same technique as the HQ Explorer)
+(function(){
+  const track=document.querySelector('.hero-track');
+  const video=document.getElementById('heroVideo');
+  const sunFlash=document.getElementById('sunFlash');
+  if(!track||!video)return;
+  let ready=false;
+  video.addEventListener('loadedmetadata',()=>{ready=true;video.pause();video.currentTime=0.001;render();});
+  video.load();
+  function render(){
+    const rect=track.getBoundingClientRect();
+    const total=track.offsetHeight-window.innerHeight;
+    if(total<=0)return;
+    const scrolled=Math.min(Math.max(-rect.top,0),total);
+    const p=scrolled/total; // 0..1 across the whole hero scroll track
+    if(ready){
+      const t=Math.max(0.001,p*(video.duration||10));
+      if(Math.abs(video.currentTime-t)>0.02) video.currentTime=t;
+    }
+    // sunlight-flash handoff: bright bloom right as the forest video ends and the
+    // city map begins, so the cut feels like a dissolve-through-sunlight, not a hard cut
+    if(sunFlash){
+      const vh=window.innerHeight;
+      const trackBottomDocY=window.scrollY+rect.bottom;
+      const rampUpStart=trackBottomDocY-vh*0.35;
+      const rampDownEnd=trackBottomDocY+vh*0.6;
+      const y=window.scrollY+vh*0.5;
+      let op=0;
+      if(y>rampUpStart&&y<trackBottomDocY) op=(y-rampUpStart)/(trackBottomDocY-rampUpStart);
+      else if(y>=trackBottomDocY&&y<rampDownEnd) op=1-(y-trackBottomDocY)/(rampDownEnd-trackBottomDocY);
+      sunFlash.style.opacity=Math.max(0,Math.min(1,op));
+    }
+  }
+  window.addEventListener('scroll',render,{passive:true});
+  window.addEventListener('resize',render);
+  render();
+})();
+
+// FEATURE CARD GLOW
+document.querySelectorAll('.fc').forEach(c=>{
+  c.addEventListener('mousemove',e=>{
+    const r=c.getBoundingClientRect();
+    c.style.setProperty('--mx',((e.clientX-r.left)/r.width*100)+'%');
+    c.style.setProperty('--my',((e.clientY-r.top)/r.height*100)+'%');
+  });
+});
+
+// NAV SCROLL — nav is transparent over the cinematic (dark) sections and gains
+// a solid background once a light section scrolls underneath it
+(function(){
+  const nav=document.querySelector('nav');
+  const hqx=document.getElementById('hqx');
+  const rec=document.getElementById('rec');
+  if(!nav)return;
+  function zones(){
+    const darkZones=[];
+    darkZones.push([0, hqx ? hqx.getBoundingClientRect().bottom+window.scrollY : 0]);
+    if(rec){
+      const r=rec.getBoundingClientRect();
+      darkZones.push([r.top+window.scrollY, r.bottom+window.scrollY]);
+    }
+    return darkZones;
+  }
+  function update(){
+    const y=window.scrollY+32; // nav's own vertical position
+    const inDark=zones().some(([a,b])=>y>=a&&y<=b);
+    nav.classList.toggle('on-light',!inDark);
+  }
+  window.addEventListener('scroll',update,{passive:true});
+  window.addEventListener('resize',update);
+  update();
+})();
+
+// STAT COUNTERS
+let counted=false;
+new IntersectionObserver(es=>{
+  if(!es[0].isIntersecting||counted)return;counted=true;
+  const cells=document.querySelectorAll('.sn');
+  function cnt(el,to,sfx,pfx){
+    const dur=1600,t0=performance.now();
+    const run=now=>{const p=Math.min((now-t0)/dur,1),e=1-Math.pow(1-p,3);el.innerHTML=(pfx||'')+Math.floor(e*to)+(sfx||'');if(p<1)requestAnimationFrame(run)};
+    requestAnimationFrame(run);
+  }
+  cnt(cells[0],180,'<b>K+</b>');
+  cells[1].innerHTML='<em>90</em>';
+  cnt(cells[2],100,'<b>%</b>');
+  cells[3].innerHTML='<em>₹12L</em>';
+},{threshold:.4}).observe(document.getElementById('stats'));
+
+// ── HQ EXPLORER — scrolling the page scrubs the video between 3 real HQ chapters ──
+(function(){
+  const track=document.querySelector('.hqx-track');
+  const video=document.getElementById('hqVideo');
+  const card=document.getElementById('hqCard');
+  const dots=document.querySelectorAll('.hqx-dot');
+  if(!track||!video)return;
+
+  const CHAPTERS=[
+    {logo:'/assets/logo-google.png',loc:'Mountain View · Google',role:'Data & AI roles',brief:'Google is actively hiring Data Analysts and ML engineers for teams that ship to a billion users.',tags:['Python','SQL','Cloud'],range:[0.15,2.3]},
+    {logo:'/assets/logo-spacex.png',loc:'Hawthorne · SpaceX',role:'Deep-tech engineering',brief:'Aerospace-grade software and systems roles are opening for engineers with strong CS fundamentals.',tags:['C++','Systems','Physics'],range:[3.9,5.7]},
+    {logo:'/assets/logo-microsoft.png',loc:'Redmond · Microsoft',role:'Software & cloud roles',brief:'Microsoft keeps growing its Azure and Copilot teams — one of the largest recruiters of Indian grads.',tags:['C#','Azure','React'],range:[7.65,9.85]}
+  ];
+
+  let ready=false;
+  video.addEventListener('loadedmetadata',()=>{ready=true;video.pause();video.currentTime=CHAPTERS[0].range[0]+0.001;});
+  video.load();
+
+  let currentChapter=-1;
+  function render(){
+    const rect=track.getBoundingClientRect();
+    const total=track.offsetHeight-window.innerHeight;
+    if(total<=0)return;
+    const scrolled=Math.min(Math.max(-rect.top,0),total);
+    const p=scrolled/total; // 0..1 across the whole HQ section
+    const idxF=Math.min(CHAPTERS.length-0.0001,p*CHAPTERS.length);
+    const idx=Math.min(CHAPTERS.length-1,Math.floor(idxF));
+    const localP=idxF-idx;
+    const ch=CHAPTERS[idx];
+
+    if(ready){
+      const t=ch.range[0]+(ch.range[1]-ch.range[0])*localP;
+      if(Math.abs(video.currentTime-t)>0.02) video.currentTime=t;
+    }
+
+    if(idx!==currentChapter){
+      currentChapter=idx;
+      card.classList.remove('show');
+      setTimeout(()=>{
+        card.innerHTML=`<div class="hqx-logo"><img src="${ch.logo}" alt=""/></div><div class="hqx-role">${ch.loc} · ${ch.role}</div><p class="hqx-brief">${ch.brief}</p><div class="hqx-tags">${ch.tags.map(t=>'<span class="hqx-tag">'+t+'</span>').join('')}</div>`;
+        requestAnimationFrame(()=>card.classList.add('show'));
+      },140);
+      dots.forEach((d,i)=>d.classList.toggle('active',i===idx));
+    }
+  }
+  window.addEventListener('scroll',render,{passive:true});
+  window.addEventListener('resize',render);
+  render();
+})();
+
+// ── AUTH MODAL — paper-roll video that resolves into a real, working sign-in form ──
+(function(){
+  const overlay=document.getElementById('authModal');
+  const video=document.getElementById('authVideo');
+  const formWrap=document.getElementById('amFormWrap');
+  const form=document.getElementById('amForm');
+  const title=document.getElementById('amTitle');
+  const toggle=document.getElementById('amToggle');
+  const extra=document.getElementById('amExtra');
+  const submitBtn=document.getElementById('amSubmit');
+  const errorEl=document.getElementById('amError');
+  const emailEl=document.getElementById('amEmail');
+  const passEl=document.getElementById('amPass');
+  const nameEl=document.getElementById('amName');
+  const eyeBtn=document.getElementById('amEye');
+  const closeBtn=document.getElementById('amClose');
+  if(!overlay)return;
+
+  let mode='login';
+  let revealed=false;
+  const REVEAL_AT=7.35; // seconds into login-paper.mp4 where the card is fully formed
+
+  // The card's position within the ORIGINAL 1280×720 video frame, measured as
+  // fractions of the frame (left, top, width, height). Used to re-derive its
+  // on-screen position for any viewport size once we know how object-fit:cover
+  // has scaled/cropped the video.
+  const CARD_BOX={left:0.2797,top:0.1458,width:0.4563,height:0.7083};
+
+  function positionCard(){
+    const vw=window.innerWidth,vh=window.innerHeight;
+    const portraitish=vw/vh<0.85; // tall/narrow screens: a 16:9 video crops too much to keep the card in frame
+    if(portraitish){
+      formWrap.classList.add('fallback');
+      formWrap.style.left='';formWrap.style.top='';formWrap.style.width='';formWrap.style.height='';formWrap.style.fontSize='';
+      return;
+    }
+    formWrap.classList.remove('fallback');
+    const nativeW=video.videoWidth||1280,nativeH=video.videoHeight||720;
+    const scale=Math.max(vw/nativeW,vh/nativeH);
+    const dispW=nativeW*scale,dispH=nativeH*scale;
+    const offX=(vw-dispW)/2,offY=(vh-dispH)/2;
+    const left=offX+CARD_BOX.left*dispW;
+    const top=offY+CARD_BOX.top*dispH;
+    const width=CARD_BOX.width*dispW;
+    const height=CARD_BOX.height*dispH;
+    formWrap.style.left=left+'px';
+    formWrap.style.top=top+'px';
+    formWrap.style.width=width+'px';
+    formWrap.style.height=height+'px';
+    formWrap.style.fontSize=Math.max(9,width/23)+'px';
+  }
+
+  function applyMode(){
+    if(mode==='signup'){
+      title.textContent='Create your account';
+      extra.hidden=false;
+      submitBtn.textContent='Create Account';
+      toggle.textContent='Already have an account? Sign In';
+    }else{
+      title.textContent='Sign In';
+      extra.hidden=true;
+      submitBtn.textContent='Log In';
+      toggle.textContent='Create Account';
+    }
+  }
+
+  function open(initialMode){
+    mode=initialMode==='signup'?'signup':'login';
+    applyMode();
+    errorEl.hidden=true;
+    form.reset();
+    positionCard();
+    overlay.classList.add('open');
+    document.body.style.overflow='hidden';
+    revealed=false;
+    formWrap.classList.remove('show');
+    video.currentTime=0;
+    video.play().catch(()=>{ /* autoplay blocked — reveal form immediately */ revealed=true; formWrap.classList.add('show'); });
+  }
+  function close(){
+    overlay.classList.remove('open');
+    document.body.style.overflow='';
+    video.pause();
+  }
+
+  video.addEventListener('loadedmetadata',()=>{ if(overlay.classList.contains('open')) positionCard(); });
+  window.addEventListener('resize',()=>{ if(overlay.classList.contains('open')) positionCard(); });
+
+  video.addEventListener('timeupdate',()=>{
+    if(!revealed && video.currentTime>=REVEAL_AT){
+      revealed=true;
+      formWrap.classList.add('show');
+    }
+  });
+
+  toggle.addEventListener('click',()=>{mode=mode==='login'?'signup':'login';applyMode();errorEl.hidden=true;});
+  eyeBtn.addEventListener('click',()=>{passEl.type=passEl.type==='password'?'text':'password';});
+  closeBtn.addEventListener('click',close);
+  overlay.addEventListener('click',e=>{if(e.target===overlay)close();});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&overlay.classList.contains('open'))close();});
+
+  document.querySelectorAll('[data-auth]').forEach(el=>{
+    el.addEventListener('click',e=>{
+      e.preventDefault();
+      open(el.getAttribute('data-auth'));
+    });
+  });
+
+  form.addEventListener('submit',async e=>{
+    e.preventDefault();
+    errorEl.hidden=true;
+    submitBtn.disabled=true;
+    const prevLabel=submitBtn.textContent;
+    submitBtn.textContent='Please wait…';
+    try{
+      const endpoint=mode==='signup'?'/api/auth/register':'/api/auth/login';
+      const body=mode==='signup'
+        ?{name:nameEl.value,email:emailEl.value,password:passEl.value}
+        :{email:emailEl.value,password:passEl.value};
+      const res=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+      const data=await res.json();
+      if(!res.ok) throw new Error(data.error||'Something went wrong. Please try again.');
+      localStorage.setItem('mg_tok',data.token);
+      localStorage.setItem('mg_usr',JSON.stringify(data.user));
+      window.location.href='/dashboard';
+    }catch(err){
+      errorEl.textContent=err.message;
+      errorEl.hidden=false;
+      submitBtn.disabled=false;
+      submitBtn.textContent=prevLabel;
+    }
+  });
+
+  // deep-link support: /?auth=login or /?auth=signup opens the modal automatically
+  const qp=new URLSearchParams(window.location.search);
+  if(qp.get('auth')) open(qp.get('auth'));
+})();
+</script>
+</body>
+</html>
