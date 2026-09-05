@@ -1,16 +1,19 @@
-import{useNavigate,useLocation}from'react-router-dom';
+import{useEffect,useState}from'react';import{useNavigate,useLocation}from'react-router-dom';
 import{useAuth}from'../context/AuthContext';
-import{LayoutDashboard,Zap,Map,TrendingUp,MessageSquare,Award,LogOut,User}from'lucide-react';
-const NAV=[{path:'/dashboard',icon:LayoutDashboard,label:'Dashboard',color:'#2B9E96'},{path:'/analyze',icon:Zap,label:'AI Skill Scan',color:'#E8601A'},{path:'/roadmap',icon:Map,label:'90-Day Plan',color:'#7B6CF6'},{path:'/market',icon:TrendingUp,label:'Market Intel',color:'#E8601A'},{path:'/chat',icon:MessageSquare,label:'AI Mentor',color:'#F5C842'},{path:'/badges',icon:Award,label:'Badges & XP',color:'#4A9E3A'}];
+import{LayoutDashboard,Zap,Map,TrendingUp,MessageSquare,Award,LogOut,User,Sun,Moon,Landmark}from'lucide-react';
+const NAV=[{path:'/dashboard',icon:LayoutDashboard,label:'Overview',color:'#111111'},{path:'/analyze',icon:Zap,label:'AI Skill Scan',color:'#111111'},{path:'/roadmap',icon:Map,label:'Roadmap Generator',color:'#111111'},{path:'/market',icon:TrendingUp,label:'Market Intel',color:'#111111'},{path:'/chat',icon:MessageSquare,label:'AI Mentor',color:'#111111'},{path:'/badges',icon:Award,label:'Achievements',color:'#111111'}];
 export function Logo({size=28}){return<svg width={size} height={size} viewBox="0 0 100 100" fill="none"><path d="M15 45 Q22 72 50 80 Q28 70 20 50 Z" fill="#2B9E96"/><path d="M85 45 Q78 72 50 80 Q72 70 80 50 Z" fill="#E8601A"/><path d="M50 12 L50 78 M37 32 L50 19 L63 32 M37 50 L50 37 L63 50" stroke="#4A9E3A" strokeWidth="5.5" strokeLinecap="round"/></svg>;}
 export default function AppShell({children}){
-  const{user,logout}=useAuth();const navigate=useNavigate();const{pathname}=useLocation();
+  const{user,logout}=useAuth();const navigate=useNavigate();const{pathname}=useLocation();const[dark,setDark]=useState(()=>localStorage.getItem('mg_theme')==='dark');
+  useEffect(()=>{document.documentElement.dataset.theme=dark?'dark':'light';localStorage.setItem('mg_theme',dark?'dark':'light');},[dark]);
   const xp=user?.xp||0;const level=Math.floor(xp/100)+1;const pct=xp%100;const init=(user?.name||'U')[0].toUpperCase();
   return<div style={{minHeight:'100vh',background:'var(--cream)'}}>
     <nav className="nav">
       <div className="nav-logo" onClick={()=>navigate('/dashboard')}><Logo/>MARG<span>DARSHAK</span></div>
       <div style={{display:'flex',alignItems:'center',gap:12}}>
-        <span className="chip chip-t" style={{cursor:'default',fontWeight:800}}>⚡ {xp} XP</span>
+        <button className="theme-toggle" onClick={()=>setDark(v=>!v)} title={dark?'Use light mode':'Use dark mode'}>{dark?<Sun size={15}/>:<Moon size={15}/>}</button>
+        <button className={'workspace-toggle '+(pathname==='/district'?'selected':'')} onClick={()=>navigate(pathname==='/district'?'/dashboard':'/district')}><Landmark size={14}/>{pathname==='/district'?'Learner view':'Officer view'}</button>
+        <span className="apple-xp">✦ {xp} XP</span>
         {user?.avatar?<div onClick={()=>navigate('/profile')} style={{width:34,height:34,borderRadius:'50%',overflow:'hidden',cursor:'pointer',border:'2px solid var(--teal)',flexShrink:0}}><img src={user.avatar} alt="" style={{width:'100%',height:'100%',objectFit:'cover'}}/></div>:<div className="ava ava-sm" onClick={()=>navigate('/profile')} style={{cursor:'pointer',width:34,height:34,fontSize:13}}>{init}</div>}
       </div>
     </nav>

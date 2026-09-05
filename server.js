@@ -128,24 +128,29 @@ const safe = u => {
 
 // ─── AI (Gemini) ──────────────────────────────────────────────────────────────
 const KEY = process.env.GEMINI_API_KEY || '';
-const GEMINI = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=' + KEY;
+// Keep the provider key on the server only. The browser calls our authenticated
+// endpoints, so it never receives the Gemini credential.
+const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+const GEMINI = 'https://generativelanguage.googleapis.com/v1beta/models/' + GEMINI_MODEL + ':generateContent?key=' + KEY;
 const HAS_KEY = KEY.length > 10;
 const cleanJ = r => r.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
 
 async function callGemini(prompt, system, maxT, history) {
   if (!HAS_KEY) throw new Error('NO_KEY');
   const contents = [...(history || []).slice(-8).map(m => ({ role: m.role === 'assistant' ? 'model' : 'user', parts: [{ text: m.content }] })), { role: 'user', parts: [{ text: prompt }] }];
-  const body = { contents, generationConfig: { temperature: 0.75, maxOutputTokens: maxT || 1500 } };
+  const body = { contents, generationConfig: { temperature: 0.65, maxOutputTokens: maxT || 1500 } };
   if (system) body.systemInstruction = { parts: [{ text: system }] };
   const res = await fetch(GEMINI, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
   const data = await res.json();
-  if (data.error) throw new Error(data.error.message);
-  return data.candidates[0].content.parts[0].text;
+  if (!res.ok || data.error) throw new Error(data.error?.message || 'Gemini could not complete this request.');
+  const text = data.candidates?.[0]?.content?.parts?.map(part => part.text || '').join('')?.trim();
+  if (!text) throw new Error('Gemini returned an empty response.');
+  return text;
 }
 
 // ─── Fallbacks ────────────────────────────────────────────────────────────────
 function fallbackAnalysis() { return { matchScore: 72, marketInsight: 'Strong potential — Python and SQL will be the highest-impact skills to add first.', salaryRange: '₹6-12 LPA in 12 months', readinessScore: 68, topRoles: [{ title: 'Data Analyst', match: 82, avgSalary: '₹6-14 LPA', demand: 'High', openings: '85,000+' }, { title: 'Business Analyst', match: 76, avgSalary: '₹5-12 LPA', demand: 'High', openings: '60,000+' }, { title: 'Product Analyst', match: 70, avgSalary: '₹7-16 LPA', demand: 'Medium', openings: '28,000+' }], top3Skills: [{ skill: 'Python', reason: 'Most in-demand skill in India — 180,000+ job listings require it.', resources: ['NPTEL', 'Swayam', 'YouTube'] }, { skill: 'Data Analysis (SQL + Excel)', reason: 'Required in 95% of analyst roles.', resources: ['NPTEL', 'Coursera (free audit)'] }, { skill: 'Communication & Storytelling', reason: 'The hidden skill that gets you hired. Earn 25% more.', resources: ['Swayam', 'LinkedIn Learning'] }], skillGaps: [{ skill: 'Python Programming', priority: 'High', timeToLearn: '6 weeks', whyItMatters: 'Required in 80% of data-related job listings.' }, { skill: 'SQL & Databases', priority: 'High', timeToLearn: '4 weeks', whyItMatters: 'Every analyst role needs this.' }, { skill: 'Data Visualization', priority: 'Medium', timeToLearn: '3 weeks', whyItMatters: 'Makes your portfolio stand out.' }] }; }
-function fallbackRoadmap(goal) { return { finalOutcome: 'Ready to apply confidently for ' + (goal || 'your target role') + ' with a real portfolio', expectedSalary: '₹6-12 LPA', jobsToApply: ['Data Analyst', 'Business Analyst', 'Junior Data Scientist', 'SQL Developer'], phases: [{ phase: 'Phase 1 — Foundation', weeks: 'Week 1-4', focus: 'Python + SQL Fundamentals', milestone: 'Complete 2 NPTEL modules', tasks: ['Complete NPTEL Python course (free)', 'Learn SQL basics on Swayam', 'Build a simple data cleaning project'], resources: [{ name: 'Programming in Python — NPTEL', platform: 'NPTEL', free: true }] }, { phase: 'Phase 2 — Build', weeks: 'Week 5-8', focus: 'Data Analysis + Portfolio', milestone: '2 real-world analysis projects on GitHub', tasks: ['Analyse a real Indian dataset', 'Build Excel + Python dashboards', 'Update LinkedIn with projects'], resources: [{ name: 'Data Analysis with Python — NPTEL', platform: 'NPTEL', free: true }] }, { phase: 'Phase 3 — Apply', weeks: 'Week 9-12', focus: 'Job Applications + Interview Prep', milestone: 'Apply to 30 companies, get 5 interviews', tasks: ['Apply on Naukri, LinkedIn, AngelList daily', 'Practice SQL on LeetCode', 'Mock interviews with MARGDARSHAK AI Mentor'], resources: [{ name: 'Interview Prep', platform: 'LinkedIn', free: true }] }] }; }
+function fallbackRoadmap(goal) { return { finalOutcome: 'Ready to apply confidently for ' + (goal || 'your target role') + ' with a real portfolio', expectedSalary: '₹6-12 LPA', jobsToApply: ['Data Analyst', 'Business Analyst', 'Junior Data Scientist', 'SQL Developer'], projects: [{ title: 'Indian Market Insights Dashboard', difficulty: 'Beginner', duration: '7 days', outcome: 'A shareable dashboard that demonstrates data cleaning, analysis and storytelling.', skills: ['Excel', 'SQL', 'Data visualisation'] }, { title: 'Career Match Recommendation Tool', difficulty: 'Intermediate', duration: '14 days', outcome: 'A portfolio app that recommends roles from a learner profile.', skills: ['Python', 'Pandas', 'Streamlit'] }, { title: 'City Salary Explorer', difficulty: 'Intermediate', duration: '10 days', outcome: 'A polished analysis of salary ranges by role and city.', skills: ['Python', 'SQL', 'Charts'] }], phases: [{ phase: 'Phase 1 — Foundation', weeks: 'Week 1-4', focus: 'Python + SQL Fundamentals', milestone: 'Complete 2 NPTEL modules', tasks: ['Complete NPTEL Python course (free)', 'Learn SQL basics on Swayam', 'Build a simple data cleaning project'], resources: [{ name: 'Programming in Python — NPTEL', platform: 'NPTEL', free: true }] }, { phase: 'Phase 2 — Build', weeks: 'Week 5-8', focus: 'Data Analysis + Portfolio', milestone: '2 real-world analysis projects on GitHub', tasks: ['Analyse a real Indian dataset', 'Build Excel + Python dashboards', 'Update LinkedIn with projects'], resources: [{ name: 'Data Analysis with Python — NPTEL', platform: 'NPTEL', free: true }] }, { phase: 'Phase 3 — Apply', weeks: 'Week 9-12', focus: 'Job Applications + Interview Prep', milestone: 'Apply to 30 companies, get 5 interviews', tasks: ['Apply on Naukri, LinkedIn, AngelList daily', 'Practice SQL on LeetCode', 'Mock interviews with MARGDARSHAK AI Mentor'], resources: [{ name: 'Interview Prep', platform: 'LinkedIn', free: true }] }] }; }
 function fallbackChat(msg, name, goal, city) { const m = msg.toLowerCase(); if (m.includes('salary') || m.includes('lpa')) return 'Here\'s the honest salary picture in India for ' + (city || 'your city') + ':\n\n**Entry level (0-1 yr):** ₹3-6 LPA\n**Mid level (1-3 yrs):** ₹6-14 LPA\n**Senior (3+ yrs):** ₹14-30+ LPA\n\nFastest way to jump salary tiers? Strong GitHub portfolio + one good NPTEL certification.'; if (m.includes('python') || m.includes('learn')) return 'Python is the right call — start with NPTEL "Programming, Data Structures and Algorithms in Python" from IIT Madras. Free, 8 weeks, employer-recognised.\n\n**Week 1-2:** Basics\n**Week 3-4:** Pandas\n**Week 5-6:** Analysis & visualisation\n**Week 7-8:** Real project with Indian data'; return 'Great question, ' + (name ? name.split(' ')[0] : 'there') + '!\n\nFor ' + (goal ? 'your goal of becoming a ' + goal : 'your career journey') + ':\n\n**Priority 1:** Build marketable skills — Python, SQL, Communication.\n\n**Priority 2:** Create a real portfolio on GitHub with Indian datasets.\n\n**Priority 3:** Get active on LinkedIn. India\'s hiring is referral-driven.'; }
 
 // ─── XP & Badges ──────────────────────────────────────────────────────────────
@@ -241,32 +246,28 @@ app.post('/api/analyze', auth, async (req, res) => {
   if (goal) u.goal = goal;
   if (city) u.city = city;
   let analysis;
-  if (!HAS_KEY) {
-    analysis = fallbackAnalysis();
-  } else {
-    const sys = 'You are MARGDARSHAK AI for India. Respond ONLY with valid raw JSON. No markdown.';
-    const prompt = `Analyse this Indian learner:\nName:${u.name}\nBackground:${u.background}\nGoal:${u.goal}\nCity:${u.city}\nSkills:${currentSkills || 'Not specified'}\n\nReturn ONLY JSON:\n{"matchScore":<0-100>,"marketInsight":"<1 sentence>","salaryRange":"₹X-Y LPA in 12 months","readinessScore":<0-100>,"topRoles":[{"title":"","match":<0-100>,"avgSalary":"₹X-Y LPA","demand":"High/Medium/Low","openings":"XX,XXX+"}],"top3Skills":[{"skill":"","reason":"","resources":[""]}],"skillGaps":[{"skill":"","priority":"High/Medium/Low","timeToLearn":"X weeks","whyItMatters":""}]}`;
-    try { analysis = JSON.parse(cleanJ(await callGemini(prompt, sys, 1200))); } catch (e) { console.error('Analyze:', e.message); analysis = fallbackAnalysis(); }
-  }
+  if (!HAS_KEY) return res.status(503).json({ error: 'Gemini is not configured. Add GEMINI_API_KEY to the server .env and restart the server.' });
+  const sys = 'You are MARGDARSHAK, an Indian career intelligence engine. Respond ONLY with valid raw JSON, no markdown. Personalise every recommendation to the exact stated profession, education, skills, and location. Never default to Data Analyst, Python, SQL, or generic tech roles unless the learner profile explicitly supports them.';
+  const prompt = `Create an individual career scan for this learner.\nName: ${u.name}\nEducation/background: ${u.background}\nTarget profession or goal: ${u.goal}\nCity: ${u.city || 'India'}\nCurrent skills: ${currentSkills || 'Not supplied'}\n\nUse the target profession as the anchor. For example, a teacher should get education roles and pedagogy skills; a designer should get design roles and design skills; a government-exam candidate should get relevant pathways. Do not give a technology template just because skills are missing. Return exactly 3 roles, 3 next skills and 3 gaps as JSON:\n{"matchScore":<0-100>,"marketInsight":"<specific sentence naming the goal>","salaryRange":"₹X-Y LPA or appropriate career outcome","readinessScore":<0-100>,"topRoles":[{"title":"","match":<0-100>,"avgSalary":"","demand":"High/Medium/Low","openings":""}],"top3Skills":[{"skill":"","reason":"<specific to stated goal>","resources":[""]}],"skillGaps":[{"skill":"","priority":"High/Medium/Low","timeToLearn":"","whyItMatters":""}]}`;
+  try { analysis = JSON.parse(cleanJ(await callGemini(prompt, sys, 1400))); } catch (e) { console.error('Analyze:', e.message); return res.status(502).json({ error: 'Gemini could not generate this scan: ' + e.message }); }
   u.skillAnalysis = analysis;
   addXP(u, 50, 'first_analysis');
-  res.json({ analysis, xp: u.xp, badges: u.badges, prototypeMode: !HAS_KEY });
+  res.json({ analysis, xp: u.xp, badges: u.badges, prototypeMode: false });
 });
 
 app.post('/api/roadmap', auth, async (req, res) => {
   const { goal, city, analysis } = req.body;
   const u = req.user;
   let roadmap;
-  if (!HAS_KEY) {
-    roadmap = fallbackRoadmap(goal || u.goal);
-  } else {
+  if (!HAS_KEY) return res.status(503).json({ error: 'Gemini is not configured. Add GEMINI_API_KEY to the server .env and restart the server.' });
+  {
     const sys = 'You are MARGDARSHAK roadmap engine for India. Respond ONLY with valid raw JSON.';
-    const prompt = `Create 90-day roadmap:\nGoal:${goal || u.goal}\nCity:${city || u.city}\nSkills:${analysis?.top3Skills?.map(s => s.skill).join(',') || 'Python,SQL'}\n\nReturn ONLY JSON:\n{"finalOutcome":"","expectedSalary":"₹X-Y LPA","jobsToApply":[""],"phases":[{"phase":"Phase 1 — Foundation","weeks":"Week 1-4","focus":"","milestone":"","tasks":[""],"resources":[{"name":"","platform":"NPTEL","free":true}]},{"phase":"Phase 2 — Build","weeks":"Week 5-8","focus":"","milestone":"","tasks":[""],"resources":[{"name":"","platform":"Swayam","free":true}]},{"phase":"Phase 3 — Apply","weeks":"Week 9-12","focus":"","milestone":"","tasks":[""],"resources":[{"name":"","platform":"LinkedIn","free":true}]}]}`;
-    try { roadmap = JSON.parse(cleanJ(await callGemini(prompt, sys, 1500))); } catch (e) { console.error('Roadmap:', e.message); roadmap = fallbackRoadmap(goal || u.goal); }
+    const prompt = `Create a truly personalised 90-day roadmap for this Indian learner.\nName:${u.name}\nBackground:${u.background || 'Not provided'}\nGoal:${goal || u.goal}\nCity:${city || u.city}\nSkills:${analysis?.top3Skills?.map(s => s.skill).join(',') || 'Python, SQL'}\nSkill gaps:${analysis?.skillGaps?.map(s => s.skill).join(',') || 'Not assessed'}\n\nRecommend projects that match this exact goal, background, and current skills; they must be concrete portfolio pieces, not generic ideas. Return ONLY JSON:\n{"finalOutcome":"","expectedSalary":"₹X-Y LPA","jobsToApply":[""],"projects":[{"title":"","difficulty":"Beginner/Intermediate/Advanced","duration":"X days","outcome":"","skills":[""]}],"phases":[{"phase":"Phase 1 — Foundation","weeks":"Week 1-4","focus":"","milestone":"","tasks":[""],"resources":[{"name":"","platform":"NPTEL","free":true}]},{"phase":"Phase 2 — Build","weeks":"Week 5-8","focus":"","milestone":"","tasks":[""],"resources":[{"name":"","platform":"Swayam","free":true}]},{"phase":"Phase 3 — Apply","weeks":"Week 9-12","focus":"","milestone":"","tasks":[""],"resources":[{"name":"","platform":"LinkedIn","free":true}]}]}`;
+    try { roadmap = JSON.parse(cleanJ(await callGemini(prompt, sys, 1800))); } catch (e) { console.error('Roadmap:', e.message); return res.status(502).json({ error: 'Gemini could not generate this roadmap: ' + e.message }); }
   }
   u.roadmap = roadmap;
   addXP(u, 30, 'roadmap_created');
-  res.json({ roadmap, xp: u.xp, badges: u.badges, prototypeMode: !HAS_KEY });
+  res.json({ roadmap, xp: u.xp, badges: u.badges, prototypeMode: false });
 });
 
 app.post('/api/chat', auth, async (req, res) => {
@@ -274,14 +275,19 @@ app.post('/api/chat', auth, async (req, res) => {
   const u = req.user;
   if (!message?.trim()) return res.status(400).json({ error: 'Message required.' });
   let reply;
-  if (!HAS_KEY) {
-    reply = fallbackChat(message, u.name, u.goal, u.city);
-  } else {
-    const sys = `You are MARGDARSHAK AI career mentor for India. Warm, direct, India-specific. User: Name=${u.name}, Background=${u.background || 'Student'}, Goal=${u.goal || 'Career growth'}, City=${u.city || 'India'}. Keep replies 2-4 paragraphs. Use ₹ for salaries. Use **bold** for key points. Mention NPTEL, Swayam, Naukri, LinkedIn India.`;
-    try { reply = await callGemini(message, sys, 600, history || []); } catch (e) { console.error('Chat:', e.message); reply = fallbackChat(message, u.name, u.goal, u.city); }
-  }
+  if (!HAS_KEY) return res.status(503).json({ error: 'Gemini is not configured. Add GEMINI_API_KEY to the server .env and restart the server.' });
+  const sys = `You are MARGDARSHAK AI. Answer the learner's actual question first, including questions outside careers. Be accurate, useful and conversational. For career questions, tailor the response to their real profile: Name=${u.name}, Background=${u.background || 'not supplied'}, Goal=${u.goal || 'not supplied'}, City=${u.city || 'India'}. Do not force career advice, Python, SQL, NPTEL, Swayam, Naukri or LinkedIn into unrelated questions. Use India-specific details only when relevant. Keep replies concise but complete; use **bold** sparingly.`;
+  try { reply = await callGemini(message, sys, 900, history || []); } catch (e) { console.error('Chat:', e.message); return res.status(502).json({ error: 'Gemini could not answer right now: ' + e.message }); }
   addXP(u, 5, 'first_chat');
-  res.json({ reply, xp: u.xp, prototypeMode: !HAS_KEY });
+  res.json({ reply, xp: u.xp, prototypeMode: false });
+});
+
+// Aggregated information only: no learner names, emails, or individual records.
+app.get('/api/district/overview', auth, (req, res) => {
+  const users = dbAllUsers();
+  const goals = {};
+  users.forEach(u => { const key = (u.goal || 'Goal not set').trim(); goals[key] = (goals[key] || 0) + 1; });
+  res.json({ totalLearners: users.length, scansCompleted: users.filter(u => u.skill_analysis || u.skillAnalysis).length, roadmapsCreated: users.filter(u => u.roadmap).length, activeCities: new Set(users.map(u => u.city).filter(Boolean)).size, topGoals: Object.entries(goals).sort((a,b) => b[1]-a[1]).slice(0,5).map(([goal,learners]) => ({ goal, learners })) });
 });
 
 // ─── Static Routes ────────────────────────────────────────────────────────────

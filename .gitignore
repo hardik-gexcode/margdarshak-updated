@@ -1,7 +1,5 @@
-@"
 node_modules/
 app/node_modules/
 app/build/
 .env
 *.log
-"@ | Out-File -Encoding utf8 .gitignore
